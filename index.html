@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>~*~ Perrita: el juego ~*~</title>
+<meta name="description" content="¿Cuánto te pareces a la Perrita del libro? Elige tu propia aventura por la Donostia alternativa.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+<style>
+/* ============ PALETA ============ */
+:root{
+  --chicle:#FF9ECF;
+  --rosa-bebe:#FFE3F1;
+  --lavanda:#CDB4FF;
+  --cielo:#B8E6FF;
+  --fucsia:#FF3FA4;
+  --ciruela:#5A2350;
+  --blanco:#FFFFFF;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:Verdana,Tahoma,Geneva,sans-serif;
+  font-size:13px;line-height:1.55;color:var(--ciruela);
+  background-color:#FFD1E8;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23FFB3D9'%3E%3Cellipse cx='20' cy='26' rx='7' ry='6'/%3E%3Ccircle cx='12' cy='17' r='3'/%3E%3Ccircle cx='17' cy='12' r='3'/%3E%3Ccircle cx='23' cy='12' r='3'/%3E%3Ccircle cx='28' cy='17' r='3'/%3E%3C/g%3E%3Cg fill='%23E9D9FF' transform='translate(40 40) rotate(20)'%3E%3Cellipse cx='20' cy='26' rx='7' ry='6'/%3E%3Ccircle cx='12' cy='17' r='3'/%3E%3Ccircle cx='17' cy='12' r='3'/%3E%3Ccircle cx='23' cy='12' r='3'/%3E%3Ccircle cx='28' cy='17' r='3'/%3E%3C/g%3E%3C/svg%3E");
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 40 40'%3E%3Cg fill='%23FF3FA4' stroke='white' stroke-width='2'%3E%3Cellipse cx='20' cy='26' rx='8' ry='7'/%3E%3Ccircle cx='10' cy='16' r='4'/%3E%3Ccircle cx='16' cy='9' r='4'/%3E%3Ccircle cx='24' cy='9' r='4'/%3E%3Ccircle cx='30' cy='16' r='4'/%3E%3C/g%3E%3C/svg%3E") 4 4, auto;
+}
+a{color:var(--fucsia)}
+a:hover{color:var(--ciruela);background:var(--cielo)}
+button,a.boton{cursor:inherit}
+:focus-visible{outline:3px dashed var(--fucsia);outline-offset:3px}
+
+/* ============ SPLASH +18 ============ */
+#splash{
+  position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
+  background:inherit;padding:16px;
+}
+#splash .ventana{max-width:420px;text-align:center}
+#splash .ventana .cuerpo{padding:20px}
+.entrar{
+  font-family:'Sniglet',cursive;font-size:28px;color:var(--fucsia);text-decoration:none;
+  display:inline-block;margin:10px 6px;background:none;border:none;
+}
+.entrar:hover{background:var(--cielo)}
+.salir{font-size:11px}
+
+/* ============ MARCO GENERAL ============ */
+.web{max-width:820px;margin:14px auto 30px;padding:0 10px}
+.cabecera{
+  background:var(--blanco);border:3px double var(--fucsia);
+  display:flex;align-items:center;gap:14px;padding:10px 16px;
+  box-shadow:5px 5px 0 var(--lavanda);
+}
+.cabecera svg{flex:0 0 auto}
+.logo{
+  font-family:'Sniglet',cursive;font-weight:800;font-size:58px;line-height:1;margin:0;
+  color:var(--chicle);
+  text-shadow:2px 2px 0 var(--blanco),4px 4px 0 var(--fucsia),6px 6px 0 var(--lavanda);
+  letter-spacing:1px;
+}
+.lema{margin:6px 0 0;font-size:12px}
+.marquesina{
+  margin:10px 0;background:var(--ciruela);color:var(--rosa-bebe);
+  border:2px solid var(--fucsia);overflow:hidden;white-space:nowrap;font-size:12px;padding:3px 0;
+}
+.marquesina span{display:inline-block;padding-left:100%;animation:desfile 22s linear infinite}
+@keyframes desfile{to{transform:translateX(-100%)}}
+
+.columnas{display:grid;grid-template-columns:190px 1fr;gap:12px;align-items:start}
+
+/* Ventanitas tipo 2003 */
+.ventana{background:var(--blanco);border:2px solid var(--fucsia);box-shadow:4px 4px 0 var(--lavanda)}
+.barra{
+  background:linear-gradient(90deg,var(--fucsia),var(--chicle));color:var(--blanco);
+  font-weight:bold;font-size:12px;padding:3px 6px;display:flex;justify-content:space-between;align-items:center;
+}
+.barra .botoncitos{display:flex;gap:3px}
+.barra .botoncitos i{
+  width:13px;height:13px;background:var(--rosa-bebe);border:1px solid var(--ciruela);display:block;
+  font-style:normal;font-size:9px;line-height:11px;text-align:center;color:var(--ciruela)
+}
+.cuerpo{padding:10px 12px}
+
+/* Barra lateral */
+.lateral .ventana{margin-bottom:12px}
+.lateral h2{font-family:'Sniglet',cursive;font-size:17px;margin:0 0 6px;color:var(--fucsia);font-weight:400}
+.lateral ul{list-style:none;margin:0;padding:0}
+.lateral li{padding:2px 0}
+.lateral li::before{content:"🐾 ";font-size:10px}
+.contador{
+  font-family:'Courier New',monospace;font-weight:bold;background:#000;color:#7CFF7C;
+  padding:3px 6px;letter-spacing:3px;display:inline-block;border:2px inset #888;font-size:15px
+}
+.blinkie{
+  display:block;margin:6px 0;padding:3px;text-align:center;font-size:10px;font-weight:bold;
+  border:1px solid var(--ciruela);background:var(--cielo);color:var(--ciruela);
+}
+.blinkie.lila{background:var(--lavanda)}
+.blinkie.rosa{background:var(--chicle);color:var(--blanco)}
+.parpadeo{animation:parpadeo 1.2s steps(2,start) infinite}
+@keyframes parpadeo{to{visibility:hidden}}
+
+/* ============ JUEGO ============ */
+#juego .cuerpo{padding:18px 20px 22px;min-height:420px}
+.pantalla{display:none}
+.pantalla.activa{display:block}
+h3{font-family:'Sniglet',cursive;font-weight:400;font-size:26px;color:var(--fucsia);margin:0 0 4px;line-height:1.15}
+.capitulo{font-size:11px;color:#A0588F;margin:0 0 12px}
+.texto{font-size:14px;line-height:1.7;max-width:62ch}
+.texto p{margin:0 0 12px}
+.mensaje{
+  display:block;width:fit-content;max-width:80%;margin:6px auto;padding:7px 12px;
+  background:var(--cielo);border-radius:14px 14px 14px 3px;font-size:13px
+}
+.mensaje.mio{background:var(--chicle);color:var(--blanco);border-radius:14px 14px 3px 14px}
+.visto{display:block;text-align:center;font-size:10px;color:#A0588F;margin-bottom:8px}
+.consola{
+  font-family:'Courier New',monospace;font-size:12.5px;background:#2B0F28;color:#FFD1E8;
+  padding:10px 12px;border:2px inset var(--lavanda);margin:8px 0 12px;white-space:pre-wrap
+}
+
+.opciones{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:9px}
+.opcion{
+  width:100%;text-align:left;font:inherit;font-size:13.5px;color:var(--ciruela);
+  background:var(--rosa-bebe);border:2px outset var(--chicle);padding:9px 12px 9px 34px;position:relative;
+}
+.opcion::before{
+  content:"";position:absolute;left:10px;top:50%;width:16px;height:16px;transform:translateY(-50%);
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='%23FF9ECF'%3E%3Cellipse cx='20' cy='26' rx='8' ry='7'/%3E%3Ccircle cx='10' cy='16' r='4'/%3E%3Ccircle cx='16' cy='9' r='4'/%3E%3Ccircle cx='24' cy='9' r='4'/%3E%3Ccircle cx='30' cy='16' r='4'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+}
+.opcion:hover{background:var(--cielo);border-color:var(--lavanda)}
+.opcion:hover::before{filter:hue-rotate(-60deg) saturate(2)}
+.opcion:active{border-style:inset}
+
+.reaccion{
+  border:2px dashed var(--lavanda);background:#FBF7FF;padding:12px 14px;margin-top:6px;font-size:13.5px
+}
+.reaccion .sello{font-family:'Sniglet',cursive;font-size:19px;display:block;margin-bottom:4px}
+.sello.canon{color:#1E9E5A}
+.sello.casi{color:#C77A00}
+.sello.fuera{color:var(--fucsia)}
+
+.boton{
+  display:inline-block;font-family:'Sniglet',cursive;font-size:18px;text-decoration:none;
+  color:var(--blanco);background:var(--fucsia);border:3px outset var(--chicle);padding:6px 18px;margin-top:14px;
+}
+.boton:hover{background:var(--ciruela);color:var(--blanco)}
+.boton.secundario{background:var(--lavanda);color:var(--ciruela);font-size:15px}
+
+/* Perrómetro */
+.perrometro{margin:0 0 14px;display:flex;align-items:center;gap:8px;font-size:11px}
+.perrometro .tubo{flex:1;height:14px;border:2px inset var(--chicle);background:var(--blanco);overflow:hidden}
+.perrometro .relleno{
+  height:100%;width:0;transition:width .4s;
+  background:repeating-linear-gradient(45deg,var(--chicle) 0 8px,var(--fucsia) 8px 16px)
+}
+
+/* Portada / final */
+.portada{text-align:center}
+.portada .texto{margin:0 auto;text-align:left}
+.dibujos{display:flex;justify-content:center;align-items:flex-end;gap:10px;margin:6px 0 10px}
+.porcentaje{
+  font-family:'Sniglet',cursive;font-weight:800;font-size:96px;line-height:1;margin:6px 0;color:var(--chicle);
+  text-shadow:3px 3px 0 var(--fucsia),6px 6px 0 var(--lavanda);
+}
+.rango{font-family:'Sniglet',cursive;font-size:28px;color:var(--ciruela);margin:0 0 8px}
+.firma{font-size:11px;color:#A0588F;margin-top:16px}
+
+.pie{text-align:center;font-size:10.5px;margin-top:16px;line-height:1.8}
+.pie .chapas{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.chapa{border:1px solid var(--ciruela);background:var(--blanco);padding:1px 6px;font-size:9.5px;font-weight:bold}
+
+/* Rastro de huellitas */
+.huellita{position:fixed;pointer-events:none;z-index:40;width:14px;height:14px;opacity:.85;animation:desvanecer 1s forwards}
+@keyframes desvanecer{to{opacity:0;transform:translateY(-8px) scale(.6)}}
+
+@media (max-width:640px){
+  .columnas{grid-template-columns:1fr}
+  .lateral{order:2}
+  .logo{font-size:42px}
+  .cabecera svg.chica{width:70px;height:auto}
+  .porcentaje{font-size:72px}
+}
+@media (prefers-reduced-motion:reduce){
+  .marquesina span,.parpadeo{animation:none}
+  .marquesina span{padding-left:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- ======== SPLASH (como las webs de antes) ======== -->
+<div id="splash" role="dialog" aria-labelledby="splash-titulo">
+  <div class="ventana">
+    <div class="barra"><span>aviso.txt</span><span class="botoncitos"><i>_</i><i>□</i><i>x</i></span></div>
+    <div class="cuerpo">
+      <div class="dibujos" aria-hidden="true">
+        <svg width="70" height="70" viewBox="0 0 40 40"><g fill="#FF9ECF"><ellipse cx="20" cy="26" rx="8" ry="7"/><circle cx="10" cy="16" r="4"/><circle cx="16" cy="9" r="4"/><circle cx="24" cy="9" r="4"/><circle cx="30" cy="16" r="4"/></g></svg>
+      </div>
+      <h3 id="splash-titulo">¡Hola, perrita!</h3>
+      <p><b>Perrita</b> es una novela para adultos. Este juego contiene referencias a fiesta, ligoteo y noches largas en Donostia.</p>
+      <button class="entrar" id="btn-entrar">~ ENTRAR (+18) ~</button><br>
+      <a class="salir" href="https://www.google.com/search?q=cachorritos">soy menor, sácame de aquí</a>
+    </div>
+  </div>
+</div>
+
+<div class="web">
+  <header class="cabecera">
+    <!-- Perrita (dibujito original) -->
+    <svg class="chica" width="96" height="104" viewBox="0 0 120 130" role="img" aria-label="Dibujo de una chica con orejitas de perrita">
+      <!-- orejas -->
+      <path d="M22 38 Q4 52 10 86 Q22 84 30 60Z" fill="#C98BB9"/>
+      <path d="M98 38 Q116 52 110 86 Q98 84 90 60Z" fill="#C98BB9"/>
+      <!-- pelo -->
+      <path d="M24 60 Q22 20 60 18 Q98 20 96 60 L96 84 Q86 70 84 54 Q60 44 36 54 Q34 70 24 84Z" fill="#8A3F7C"/>
+      <!-- cara -->
+      <ellipse cx="60" cy="64" rx="30" ry="29" fill="#FFE6D8"/>
+      <path d="M32 54 Q46 36 60 46 Q74 36 88 54 Q74 44 60 52 Q46 44 32 54Z" fill="#8A3F7C"/>
+      <!-- ojos -->
+      <ellipse cx="48" cy="66" rx="5" ry="6.5" fill="#5A2350"/><circle cx="50" cy="63.5" r="2" fill="#fff"/>
+      <ellipse cx="72" cy="66" rx="5" ry="6.5" fill="#5A2350"/><circle cx="74" cy="63.5" r="2" fill="#fff"/>
+      <!-- mofletes -->
+      <ellipse cx="40" cy="76" rx="5" ry="3" fill="#FF9ECF" opacity=".8"/>
+      <ellipse cx="80" cy="76" rx="5" ry="3" fill="#FF9ECF" opacity=".8"/>
+      <!-- naricita y boca -->
+      <ellipse cx="60" cy="74" rx="2.2" ry="1.6" fill="#5A2350"/>
+      <path d="M54 79 Q57 83 60 79 Q63 83 66 79" stroke="#5A2350" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M61 80.5 Q62 86 64.5 82" fill="#FF6FB5"/>
+      <!-- collar -->
+      <rect x="40" y="92" width="40" height="8" rx="4" fill="#FF3FA4"/>
+      <path d="M60 100 l-6 6 a4 4 0 0 1 6 -8 a4 4 0 0 1 6 8z" fill="#FFD84D" stroke="#C77A00" stroke-width="1"/>
+      <!-- brillitos -->
+      <path d="M104 18 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" fill="#B8E6FF"/>
+      <path d="M12 16 l1.5 4 4 1.5 -4 1.5 -1.5 4 -1.5 -4 -4 -1.5 4 -1.5z" fill="#CDB4FF"/>
+    </svg>
+    <div>
+      <h1 class="logo">Perrita</h1>
+      <p class="lema">el juego oficial de la novela de <b>Joan Marie Arroyo Alcón</b> ~ ¿eres tan perrita como ella?</p>
+    </div>
+  </header>
+
+  <div class="marquesina" aria-hidden="true"><span>✿ bienvenida a la web más cuqui de la Parte Vieja ✿ elige bien y descubre cuánto te pareces a la Perrita del libro ✿ guau guau ✿ no olvides firmar el libro de visitas ✿ actualizado el 06/10/2026 ✿</span></div>
+
+  <div class="columnas">
+    <aside class="lateral">
+      <div class="ventana">
+        <div class="barra"><span>menú</span></div>
+        <div class="cuerpo">
+          <ul>
+            <li><a href="#" id="link-jugar">jugar desde el principio</a></li>
+            <li><a href="https://jmaa.tv/puppy-girl" target="_blank" rel="noopener">comprar el libro</a></li>
+            <li><a href="https://jmaa.tv" target="_blank" rel="noopener">jmaa.tv</a></li>
+            <li><a href="https://instagram.com/jmaa.tv" target="_blank" rel="noopener">instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="ventana">
+        <div class="barra"><span>visitas</span></div>
+        <div class="cuerpo" style="text-align:center">
+          <span class="contador" id="contador">0000000</span>
+          <p style="font-size:10px;margin:6px 0 0">perritas desde 2026</p>
+        </div>
+      </div>
+      <div class="ventana">
+        <div class="barra"><span>mis chapitas</span></div>
+        <div class="cuerpo">
+          <span class="blinkie rosa"><span class="parpadeo">♥</span> perrita forever <span class="parpadeo">♥</span></span>
+          <span class="blinkie">hecho en Donostia</span>
+          <span class="blinkie lila">guau guau ~ 102 páginas</span>
+          <span class="blinkie">ES · EUS · EN</span>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <section class="ventana" id="juego" aria-live="polite">
+        <div class="barra"><span>perrita.exe</span><span class="botoncitos"><i>_</i><i>□</i><i>x</i></span></div>
+        <div class="cuerpo">
+
+          <!-- PORTADA -->
+          <div class="pantalla activa portada" id="p-inicio">
+            <div class="dibujos" aria-hidden="true" id="dibujo-perritos"></div>
+            <h3>¿Eres tan perrita como Perrita?</h3>
+            <div class="texto">
+              <p>Vas a vivir la historia de la novela decisión a decisión. En cada escena elige lo que crees que hace ella en el libro.</p>
+              <p>Al final calculamos tu <b>porcentaje de precisión</b> con la novela original. Si aciertas todo, eres perrita de pura raza.</p>
+            </div>
+            <button class="boton" id="btn-empezar">Empezar la historia</button>
+          </div>
+
+          <!-- ESCENA -->
+          <div class="pantalla" id="p-escena">
+            <div class="perrometro" aria-hidden="true">
+              <span>perrómetro</span><div class="tubo"><div class="relleno" id="relleno"></div></div><span id="paso"></span>
+            </div>
+            <p class="capitulo" id="esc-capitulo"></p>
+            <h3 id="esc-titulo"></h3>
+            <div class="texto" id="esc-texto"></div>
+            <ul class="opciones" id="esc-opciones"></ul>
+            <div id="esc-reaccion" hidden></div>
+          </div>
+
+          <!-- FINAL -->
+          <div class="pantalla portada" id="p-final">
+            <p class="capitulo">tu precisión con el libro</p>
+            <div class="porcentaje" id="fin-porcentaje">0%</div>
+            <p class="rango" id="fin-rango"></p>
+            <div class="dibujos" aria-hidden="true" id="dibujo-final"></div>
+            <div class="texto" id="fin-texto"></div>
+            <a class="boton" href="https://jmaa.tv/puppy-girl" target="_blank" rel="noopener" id="fin-cta">Comprar Perrita en Amazon</a><br>
+            <button class="boton secundario" id="btn-compartir">Compartir mi resultado</button>
+            <button class="boton secundario" id="btn-repetir">Jugar otra vez</button>
+            <p class="firma" id="fin-firma"></p>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pie">
+    <div class="chapas"><span class="chapa">HTML 4.01</span><span class="chapa">mejor en 800×600</span><span class="chapa">sin cookies malas</span><span class="chapa">🐾 powered</span></div>
+    © 2026 Joan Marie Arroyo Alcón · <a href="https://jmaa.tv" target="_blank" rel="noopener">jmaa.tv</a> · Errenteria
+  </footer>
+</div>
+
+<script>
+/* =====================================================================
+   HISTORIA  ✏️  ← EDITA AQUÍ
+   ---------------------------------------------------------------------
+   Cada escena tiene:
+     capitulo, titulo, texto (HTML permitido: <p>, mensajes, consola)
+     opciones: [{ t: "texto del botón", p: puntos, r: "reacción" }]
+       p = 1   → lo que pasa en el libro (canon)
+       p = 0.5 → se acerca
+       p = 0   → no pasa así
+   Las opciones se barajan solas, no hace falta poner la buena la última.
+
+   ⚠️ BORRADOR: estas escenas son provisionales, escritas sin el texto
+   del libro. Sustitúyelas por las escenas reales de Perrita.
+   ===================================================================== */
+const HISTORIA = [
+  {
+    capitulo: "Parte I",
+    titulo: "Viernes en la Parte Vieja",
+    texto: `<p>Es viernes, llueve fino sobre Donostia y el móvil vibra encima de la cama. Es él.</p>
+      <span class="mensaje">¿Sales hoy?</span>`,
+    opciones: [
+      { t: "Contestar al momento con un emoji", p: 0, r: "Demasiado disponible. Perrita no regala la respuesta tan rápido." },
+      { t: "Dejarlo en visto y empezar a arreglarse", p: 1, r: "Exacto: [Visto] y al espejo. Así empieza la noche en el libro." },
+      { t: "Apagar el móvil y quedarse en casa", p: 0, r: "Uy, entonces no habría novela." }
+    ]
+  },
+  {
+    capitulo: "Parte I",
+    titulo: "Frente al espejo",
+    texto: `<p>Sobre la silla hay ropa de tres noches distintas. Falta decidir el detalle que lo cambia todo.</p>`,
+    opciones: [
+      { t: "El collar con la chapita", p: 1, r: "La chapita tintinea. No podía ser otro." },
+      { t: "Unos pendientes discretos", p: 0, r: "Muy elegante, pero muy poco Perrita." },
+      { t: "Nada de accesorios, que luego se pierden", p: 0.5, r: "Prudente. Casi, pero no del todo." }
+    ]
+  },
+  {
+    capitulo: "Parte II",
+    titulo: "La cola del club",
+    texto: `<p>Bajo las luces del portal hay cola, humo y gente que conoces de vista. La música retumba en el suelo.</p>`,
+    opciones: [
+      { t: "Saludar a todo el mundo en la cola", p: 0.5, r: "Bien social, aunque en el libro la cosa va más directa." },
+      { t: "Colarse con la chica de la puerta", p: 1, r: "Dentro en dos minutos. Muy canon." },
+      { t: "Esperar su turno en silencio", p: 0, r: "Demasiado civilizada para esta noche." }
+    ]
+  },
+  {
+    capitulo: "Parte II",
+    titulo: "Alguien te llama así",
+    texto: `<p>En la barra, alguien se inclina y te dice al oído: <i>«perrita»</i>.</p>`,
+    opciones: [
+      { t: "Ofenderse y darse la vuelta", p: 0, r: "Al revés: el apodo es el corazón de todo." },
+      { t: "Sonreír y no decir nada", p: 0.5, r: "Se acerca. Pero en el libro hay sonido." },
+      { t: "Responder «¡Guau, guau!»", p: 1, r: "¡Guau, guau! Ni una página de diferencia." }
+    ]
+  },
+  {
+    capitulo: "Parte II",
+    titulo: "Las cinco de la mañana",
+    texto: `<p>Cierran el club. Los grupitos se dispersan por la calle mojada y alguien propone seguir.</p>`,
+    opciones: [
+      { t: "Ir al after", p: 1, r: "Claro que sí. La noche no había terminado." },
+      { t: "Ver amanecer en La Concha", p: 0.5, r: "Bonito, y muy donostiarra, pero eso llega más tarde." },
+      { t: "Pillar un taxi a casa", p: 0, r: "Demasiado pronto para retirarse." }
+    ]
+  },
+  {
+    capitulo: "Parte III",
+    titulo: "El día después",
+    texto: `<p>Mediodía. Resaca y luz gris. En el móvil:</p>
+      <span class="mensaje">Lo de anoche…</span>
+      <span class="mensaje">¿Hablamos?</span>
+      <span class="visto">[Visto]</span>`,
+    opciones: [
+      { t: "Escribir un mensaje larguísimo", p: 0.5, r: "Lo escribe, sí… pero no lo envía así." },
+      { t: "Bloquearle", p: 0, r: "Demasiado drástico para este punto de la historia." },
+      { t: "Preguntarle a ChatGPT qué contestar", p: 1, r: "Justo. Y la conversación con la IA es oro." }
+    ]
+  },
+  {
+    capitulo: "Parte III",
+    titulo: "Conversación con la máquina",
+    texto: `<div class="consola">&gt; ¿qué le contesto a alguien que me llama perrita?
+
+ChatGPT: Depende de cómo te haga sentir. ¿Te gusta?</div>`,
+    opciones: [
+      { t: "«Sí. Y eso es lo que me asusta.»", p: 1, r: "La frase que pone el libro patas arriba." },
+      { t: "«No lo sé.»", p: 0.5, r: "Honesto, pero se queda corto." },
+      { t: "Cerrar la pestaña", p: 0, r: "Y perderse la mejor escena. No." }
+    ]
+  },
+  {
+    capitulo: "Final",
+    titulo: "Otra vez viernes",
+    texto: `<p>Ha pasado una semana. Llueve fino otra vez. El móvil vibra encima de la cama.</p>`,
+    opciones: [
+      { t: "Ponerse el collar sin mirar el mensaje", p: 1, r: "El círculo se cierra. Así acaba." },
+      { t: "Leer el mensaje primero", p: 0.5, r: "Casi. Pero ella ya sabe lo que va a hacer." },
+      { t: "Mudarse de ciudad", p: 0, r: "¿Dejar Donostia? Jamás." }
+    ]
+  }
+];
+
+/* Mensajes finales según el porcentaje (de mayor a menor) */
+const RESULTADOS = [
+  { min: 100, rango: "Perrita de pura raza", texto: "Has seguido la novela paso a paso. O la has leído tres veces o eres la propia Perrita. Ten tu ejemplar firmado en la estantería, que se nota." },
+  { min: 75, rango: "Casi canon", texto: "Tienes buen olfato: has captado el espíritu de Perrita casi entero. Lee la novela y descubre dónde te has despistado." },
+  { min: 50, rango: "Perrita callejera", texto: "Te mueves por la noche donostiarra con soltura, pero Perrita tiene sus propias reglas. Están todas en el libro." },
+  { min: 25, rango: "Te has soltado del collar", texto: "Has vivido otra historia, y no estaba mal. Pero la de verdad es mucho más intensa. Te está esperando." },
+  { min: 0, rango: "¿Has leído la contraportada?", texto: "Tu versión y el libro apenas se han cruzado. Buenas noticias: así lo disfrutarás todo por primera vez." }
+];
+
+/* ===================== MOTOR DEL JUEGO ===================== */
+const $ = id => document.getElementById(id);
+const huellaSVG = (color, size) => `<svg width="${size}" height="${size}" viewBox="0 0 40 40"><g fill="${color}"><ellipse cx="20" cy="26" rx="8" ry="7"/><circle cx="10" cy="16" r="4"/><circle cx="16" cy="9" r="4"/><circle cx="24" cy="9" r="4"/><circle cx="30" cy="16" r="4"/></g></svg>`;
+const perritoSVG = (pelo, size) => `<svg width="${size}" height="${size*0.9}" viewBox="0 0 100 90">
+  <ellipse cx="50" cy="70" rx="30" ry="18" fill="${pelo}"/>
+  <circle cx="50" cy="42" r="26" fill="${pelo}"/>
+  <path d="M26 30 Q10 40 16 66 Q28 60 32 42Z" fill="#8A3F7C"/>
+  <path d="M74 30 Q90 40 84 66 Q72 60 68 42Z" fill="#8A3F7C"/>
+  <ellipse cx="50" cy="52" rx="13" ry="10" fill="#FFF4EC"/>
+  <circle cx="41" cy="40" r="4" fill="#5A2350"/><circle cx="42.5" cy="38.5" r="1.3" fill="#fff"/>
+  <circle cx="59" cy="40" r="4" fill="#5A2350"/><circle cx="60.5" cy="38.5" r="1.3" fill="#fff"/>
+  <ellipse cx="50" cy="49" rx="4" ry="3" fill="#5A2350"/>
+  <path d="M46 55 Q50 59 54 55" stroke="#5A2350" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M49 57 Q50 64 53 58" fill="#FF6FB5"/>
+  <rect x="34" y="64" width="32" height="6" rx="3" fill="#FF3FA4"/>
+  <circle cx="50" cy="73" r="4" fill="#FFD84D"/>
+  <ellipse cx="36" cy="49" rx="4" ry="2.5" fill="#FF9ECF" opacity=".8"/>
+  <ellipse cx="64" cy="49" rx="4" ry="2.5" fill="#FF9ECF" opacity=".8"/>
+</svg>`;
+
+$("dibujo-perritos").innerHTML = huellaSVG("#CDB4FF", 26) + perritoSVG("#F7D7B5", 90) + perritoSVG("#FFFFFF", 70) + huellaSVG("#FF9ECF", 26);
+
+let indice = 0, puntos = 0, orden = [];
+
+function mostrar(id){
+  document.querySelectorAll(".pantalla").forEach(p => p.classList.remove("activa"));
+  $(id).classList.add("activa");
+}
+function barajar(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+
+function empezar(){
+  indice = 0; puntos = 0;
+  pintarEscena();
+  mostrar("p-escena");
+}
+
+function pintarEscena(){
+  const e = HISTORIA[indice];
+  $("esc-capitulo").textContent = `${e.capitulo} · escena ${indice+1} de ${HISTORIA.length}`;
+  $("esc-titulo").textContent = e.titulo;
+  $("esc-texto").innerHTML = e.texto;
+  $("paso").textContent = `${indice+1}/${HISTORIA.length}`;
+  $("relleno").style.width = (indice / HISTORIA.length * 100) + "%";
+  const lista = $("esc-opciones");
+  lista.innerHTML = ""; lista.hidden = false;
+  $("esc-reaccion").hidden = true;
+  orden = barajar(e.opciones);
+  orden.forEach((op, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "opcion"; b.textContent = op.t;
+    b.addEventListener("click", () => elegir(i));
+    li.appendChild(b); lista.appendChild(li);
+  });
+  const primero = lista.querySelector("button"); if (primero) primero.focus({preventScroll:true});
+}
+
+function elegir(i){
+  const op = orden[i];
+  puntos += op.p;
+  const tipo = op.p >= 1 ? "canon" : op.p > 0 ? "casi" : "fuera";
+  const sello = { canon:"¡Como en el libro!", casi:"Casi casi…", fuera:"Eso no pasa así" }[tipo];
+  $("esc-opciones").hidden = true;
+  const ultima = indice === HISTORIA.length - 1;
+  const r = $("esc-reaccion");
+  r.innerHTML = `<div class="reaccion"><span class="sello ${tipo}">${sello}</span>
+    <div><b>Elegiste:</b> ${op.t}</div><div>${op.r}</div></div>
+    <button class="boton" id="btn-seguir">${ultima ? "Ver mi resultado" : "Siguiente escena"}</button>`;
+  r.hidden = false;
+  $("relleno").style.width = ((indice+1) / HISTORIA.length * 100) + "%";
+  $("btn-seguir").focus();
+  $("btn-seguir").addEventListener("click", () => {
+    if (ultima) final(); else { indice++; pintarEscena(); }
+  });
+}
+
+function final(){
+  const pct = Math.round(puntos / HISTORIA.length * 100);
+  const res = RESULTADOS.find(x => pct >= x.min);
+  $("fin-rango").textContent = res.rango;
+  $("fin-texto").innerHTML = `<p>${res.texto}</p><p><b>Perrita</b> está disponible en castellano, euskera (<i>Txakur Neska</i>) e inglés (<i>Puppy Girl</i>), en Kindle y en papel.</p>`;
+  $("fin-firma").textContent = `${HISTORIA.length} escenas · ${puntos.toString().replace(".", ",")} aciertos`;
+  const cuantas = Math.max(1, Math.round(pct / 20));
+  $("dibujo-final").innerHTML = Array.from({length:cuantas}, (_, i) => huellaSVG(i%2 ? "#CDB4FF" : "#FF9ECF", 30)).join("");
+  mostrar("p-final");
+  // cuenta animada
+  const el = $("fin-porcentaje");
+  const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (quieto){ el.textContent = pct + "%"; return; }
+  let n = 0; const paso = Math.max(1, Math.ceil(pct / 40));
+  const t = setInterval(() => { n = Math.min(pct, n + paso); el.textContent = n + "%"; if (n >= pct) clearInterval(t); }, 25);
+  window._ultimo = { pct, rango: res.rango };
+}
+
+async function compartir(){
+  const { pct = 0, rango = "" } = window._ultimo || {};
+  const texto = `He sacado un ${pct}% de precisión con la novela Perrita (${rango}) 🐾 ¿Eres tan perrita como ella?`;
+  const url = location.href.split("#")[0];
+  try {
+    if (navigator.share) { await navigator.share({ title: "Perrita: el juego", text: texto, url }); return; }
+    await navigator.clipboard.writeText(`${texto} ${url}`);
+    $("btn-compartir").textContent = "¡Copiado!";
+    setTimeout(() => $("btn-compartir").textContent = "Compartir mi resultado", 2000);
+  } catch(e) { /* el usuario canceló */ }
+}
+
+/* Contador de visitas retro (local, decorativo) */
+(function(){
+  let n = 10297;
+  try { const v = parseInt(localStorage.getItem("perrita_visitas") || "0", 10) + 1; localStorage.setItem("perrita_visitas", v); n += v; } catch(e){}
+  $("contador").textContent = String(n).padStart(7, "0");
+})();
+
+/* Rastro de huellitas al mover el ratón */
+(function(){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || matchMedia("(pointer: coarse)").matches) return;
+  let ultima = 0, lado = 1;
+  document.addEventListener("mousemove", ev => {
+    const ahora = performance.now(); if (ahora - ultima < 110) return; ultima = ahora; lado *= -1;
+    const d = document.createElement("div");
+    d.className = "huellita";
+    d.innerHTML = huellaSVG(lado > 0 ? "#FF9ECF" : "#CDB4FF", 14);
+    d.style.left = (ev.clientX + 10 + lado*5) + "px"; d.style.top = (ev.clientY + 12) + "px";
+    document.body.appendChild(d); setTimeout(() => d.remove(), 1000);
+  });
+})();
+
+/* Botones */
+$("btn-entrar").addEventListener("click", () => { $("splash").remove(); $("btn-empezar").focus(); });
+$("btn-empezar").addEventListener("click", empezar);
+$("btn-repetir").addEventListener("click", empezar);
+$("btn-compartir").addEventListener("click", compartir);
+$("link-jugar").addEventListener("click", e => { e.preventDefault(); empezar(); });
+</script>
+</body>
+</html>
